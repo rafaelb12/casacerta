@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — CasaCerta</title>
+  <!-- Impede indexação pelo Google -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="admin-body">
+
+  <!-- LOGIN (exibido se não autenticado) -->
+  <div id="screen-login" class="admin-login-wrap">
+    <div class="login-card">
+      <div class="login-logo">Casa<span>Certa</span></div>
+      <h2>Acesso restrito</h2>
+      <p>Painel de administração</p>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="admin@casacerta.com.br" />
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="login-pass" placeholder="••••••••" />
+      </div>
+      <div id="login-error" class="login-error" style="display:none">E-mail ou senha incorretos.</div>
+      <button class="btn-primary full" id="btn-login" onclick="doLogin()">Entrar</button>
+    </div>
+  </div>
+
+  <!-- PAINEL (exibido após login) -->
+  <div id="screen-admin" style="display:none">
+
+    <nav class="admin-nav">
+      <span class="logo">Casa<span>Certa</span> <span class="admin-tag">Admin</span></span>
+      <div class="admin-nav-right">
+        <span id="admin-email-label" class="admin-email"></span>
+        <button class="btn-outline small" onclick="doLogout()">Sair</button>
+      </div>
+    </nav>
+
+    <div class="admin-wrap">
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="stat-total">—</div>
+          <div class="stat-lbl">Total de imóveis</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-venda">—</div>
+          <div class="stat-lbl">Para venda</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-locacao">—</div>
+          <div class="stat-lbl">Para locação</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-lancamento">—</div>
+          <div class="stat-lbl">Lançamentos</div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="showTab('tab-cadastro', this)">Cadastrar imóvel</button>
+        <button class="admin-tab" onclick="showTab('tab-lista', this)">Gerenciar imóveis</button>
+      </div>
+
+      <!-- TAB: CADASTRAR -->
+      <div id="tab-cadastro" class="admin-tab-content">
+        <div class="form-card">
+          <h3>Novo imóvel</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo de negócio *</label>
+              <select id="f-negocio">
+                <option value="">Selecione</option>
+                <option>Venda</option>
+                <option>Locação</option>
+                <option>Lançamento</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tipo de imóvel *</label>
+              <select id="f-tipo">
+                <option value="">Selecione</option>
+                <option>Apartamento</option>
+                <option>Casa</option>
+                <option>Comercial</option>
+                <option>Terreno</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Título *</label>
+            <input type="text" id="f-titulo" placeholder="Ex: Apartamento com varanda gourmet, 3 quartos" maxlength="100" />
+          </div>
+
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea id="f-desc" rows="4" placeholder="Descreva o imóvel com detalhes: infraestrutura, diferenciais, vizinhança..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Preço (R$) *</label>
+              <input type="number" id="f-preco" placeholder="350000" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Área (m²) *</label>
+              <input type="number" id="f-area" placeholder="72" min="1" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Quartos</label>
+              <select id="f-quartos">
+                <option value="0">0 (sem quartos)</option>
+                <option value="1">1 quarto</option>
+                <option value="2">2 quartos</option>
+                <option value="3">3 quartos</option>
+                <option value="4">4+ quartos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Banheiros</label>
+              <select id="f-banheiros">
+                <option value="1">1 banheiro</option>
+                <option value="2">2 banheiros</option>
+                <option value="3">3 banheiros</option>
+                <option value="4">4+ banheiros</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vagas de garagem</label>
+              <select id="f-vagas">
+                <option value="0">Sem garagem</option>
+                <option value="1">1 vaga</option>
+                <option value="2">2 vagas</option>
+                <option value="3">3+ vagas</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>CEP</label>
+              <input type="text" id="f-cep" placeholder="00000-000" maxlength="9" oninput="formatCEP(this)" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Cidade *</label>
+              <input type="text" id="f-cidade" placeholder="São Paulo" />
+            </div>
+            <div class="form-group">
+              <label>Bairro *</label>
+              <input type="text" id="f-bairro" placeholder="Pinheiros" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Endereço (opcional)</label>
+            <input type="text" id="f-endereco" placeholder="Rua das Flores, 123" />
+          </div>
+
+          <div class="form-group">
+            <label>Telefone para contato *</label>
+            <input type="text" id="f-telefone" placeholder="(11) 99999-9999" maxlength="15" oninput="formatTel(this)" />
+          </div>
+
+          <!-- UPLOAD DE IMAGENS -->
+          <div class="form-group">
+            <label>Fotos do imóvel</label>
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+              <div class="upload-icon">📷</div>
+              <div>Clique para adicionar fotos</div>
+              <div class="upload-hint">JPG ou PNG — até 10 imagens, máx. 5MB cada</div>
+            </div>
+            <input type="file" id="file-input" multiple accept="image/*" style="display:none" onchange="handleFiles(event)" />
+            <div class="preview-grid" id="preview-grid"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Destaque</label>
+            <label class="toggle-label">
+              <input type="checkbox" id="f-destaque" />
+              <span class="toggle-slider"></span>
+              Marcar como imóvel em destaque
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-outline" onclick="clearForm()">Limpar</button>
+            <button class="btn-primary" id="btn-publicar" onclick="publishImovel()">Publicar imóvel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: LISTA -->
+      <div id="tab-lista" class="admin-tab-content" style="display:none">
+        <div class="form-card">
+          <div class="lista-header">
+            <h3>Imóveis cadastrados</h3>
+            <input type="text" id="admin-search" placeholder="Buscar..." oninput="filterAdminList()" class="admin-search-input" />
+          </div>
+          <div id="admin-list">
+            <div class="loading-msg">Carregando...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="../js/firebase-config.js"></script>
+  <script type="module" src="../js/admin.js"></script>
+
+</body>
+</html>
