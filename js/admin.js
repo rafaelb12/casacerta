@@ -1,7 +1,4 @@
-// =============================================
-//  admin.js — Painel admin (/admin/painel.html)
-//  Upload de fotos via Cloudinary (gratuito)
-// =============================================
+
 
 import { db, auth } from "../js/firebase-config.js";
 import {
@@ -12,27 +9,13 @@ import {
   signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// =============================================
-//  ⬇️  CONFIGURE AQUI O SEU CLOUDINARY
-//  1. Crie conta gratuita em cloudinary.com
-//  2. No Dashboard copie o "Cloud name"
-//  3. Vá em Settings > Upload > Add upload preset
-//     - Signing mode: "Unsigned"
-//     - Copie o nome do preset criado
-// =============================================
-const CLOUDINARY_CLOUD_NAME    = "dkeyabx5v";  // ex: "casacerta123"
-const CLOUDINARY_UPLOAD_PRESET = "casacerta";      // ex: "imoveis_unsigned"
+const CLOUDINARY_CLOUD_NAME    = "dkeyabx5v";  
+const CLOUDINARY_UPLOAD_PRESET = "casacerta";      
 
-// ──────────────────────────────────────────
-//  Estado
-// ──────────────────────────────────────────
 let imoveis      = [];
 let pendingFiles = [];
 let adminImoveis = [];
 
-// ──────────────────────────────────────────
-//  Auth listener
-// ──────────────────────────────────────────
 onAuthStateChanged(auth, user => {
   if (user) {
     document.getElementById("screen-login").style.display = "none";
@@ -72,9 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ──────────────────────────────────────────
-//  Carregar imóveis
-// ──────────────────────────────────────────
+
 async function loadImoveis() {
   try {
     const snap   = await getDocs(query(collection(db, "imoveis"), orderBy("criadoEm", "desc")));
@@ -92,9 +73,8 @@ function updateStats() {
   document.getElementById("stat-lancamento").textContent = imoveis.filter(i => i.negocio === "Lançamento").length;
 }
 
-// ──────────────────────────────────────────
-//  Render lista admin
-// ──────────────────────────────────────────
+
+
 function renderAdminList(lista) {
   const el = document.getElementById("admin-list");
   if (!lista.length) { el.innerHTML = `<div class="loading-msg">Nenhum imóvel cadastrado.</div>`; return; }
@@ -121,9 +101,7 @@ window.filterAdminList = function() {
   ));
 };
 
-// ──────────────────────────────────────────
-//  Upload para Cloudinary (sem custo)
-// ──────────────────────────────────────────
+
 async function uploadParaCloudinary(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -135,9 +113,7 @@ async function uploadParaCloudinary(file) {
   return data.secure_url;
 }
 
-// ──────────────────────────────────────────
-//  Publicar imóvel
-// ──────────────────────────────────────────
+
 window.publishImovel = async function() {
   const negocio   = document.getElementById("f-negocio").value;
   const tipo      = document.getElementById("f-tipo").value;
@@ -185,9 +161,7 @@ window.publishImovel = async function() {
   }
 };
 
-// ──────────────────────────────────────────
-//  Deletar
-// ──────────────────────────────────────────
+
 window.deleteImovel = async function(id, btn) {
   if (!confirm("Remover este imóvel? Essa ação não pode ser desfeita.")) return;
   btn.disabled = true; btn.textContent = "Removendo...";
@@ -198,9 +172,7 @@ window.deleteImovel = async function(id, btn) {
   } catch { showToast("Erro ao remover"); btn.disabled = false; btn.textContent = "Remover"; }
 };
 
-// ──────────────────────────────────────────
-//  Preview de fotos
-// ──────────────────────────────────────────
+
 window.handleFiles = function(event) {
   const files = Array.from(event.target.files);
   if (pendingFiles.length + files.length > 10) { showToast("Máximo de 10 fotos"); return; }
@@ -233,9 +205,7 @@ window.removePreview = function(index) {
   });
 };
 
-// ──────────────────────────────────────────
-//  Helpers
-// ──────────────────────────────────────────
+
 window.showTab = function(tabId, btn) {
   document.querySelectorAll(".admin-tab-content").forEach(t => t.style.display = "none");
   document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
