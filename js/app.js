@@ -1,24 +1,16 @@
-// =============================================
-//  app.js — Site público (index.html)
-// =============================================
+
 
 import { db }           from "./firebase-config.js";
 import {
   collection, getDocs, query, orderBy, where
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ──────────────────────────────────────────
-//  Estado global
-// ──────────────────────────────────────────
+let todosImoveis = [];         
+let filtrados    = [];          
+let activeChips  = new Set();   
+let favoritos    = loadFavs();  
 
-let todosImoveis = [];          // todos carregados do Firestore
-let filtrados    = [];          // resultado dos filtros atuais
-let activeChips  = new Set();   // chips ativos
-let favoritos    = loadFavs();  // IDs salvos no localStorage
 
-// ──────────────────────────────────────────
-//  Init
-// ──────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", async () => {
   updateFavBadge();
@@ -28,9 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   bindFavLink();
 });
 
-// ──────────────────────────────────────────
-//  Carregar imóveis do Firestore
-// ──────────────────────────────────────────
+
 
 async function carregarImoveis() {
   try {
@@ -48,9 +38,6 @@ async function carregarImoveis() {
   }
 }
 
-// ──────────────────────────────────────────
-//  Render cards
-// ──────────────────────────────────────────
 
 function renderCards(lista, containerId = "cards-grid") {
   const grid = document.getElementById(containerId);
@@ -93,9 +80,7 @@ function renderCards(lista, containerId = "cards-grid") {
   }).join("");
 }
 
-// ──────────────────────────────────────────
-//  Modal detalhe
-// ──────────────────────────────────────────
+
 
 window.abrirModal = function(id) {
   const im = todosImoveis.find(i => i.id === id);
@@ -153,9 +138,6 @@ function row(label, value) {
   </div>`;
 }
 
-// ──────────────────────────────────────────
-//  Favoritos
-// ──────────────────────────────────────────
 
 window.toggleFav = function(e, id) {
   e.stopPropagation();
@@ -217,9 +199,6 @@ function bindFavLink() {
   });
 }
 
-// ──────────────────────────────────────────
-//  Filtros e busca
-// ──────────────────────────────────────────
 
 function bindChips() {
   document.querySelectorAll(".chip").forEach(chip => {
@@ -293,9 +272,7 @@ function updateResultsInfo(n) {
     `${n} imóvel${n !== 1 ? "s" : ""} encontrado${n !== 1 ? "s" : ""}`;
 }
 
-// ──────────────────────────────────────────
-//  Helpers visuais
-// ──────────────────────────────────────────
+
 
 function formatPreco(preco, negocio) {
   const v = Number(preco).toLocaleString("pt-BR");
@@ -315,9 +292,7 @@ function emoji(tipo) {
   return "🏠";
 }
 
-// ──────────────────────────────────────────
-//  Toast
-// ──────────────────────────────────────────
+
 
 window.showToast = function(msg) {
   const t = document.getElementById("toast");
